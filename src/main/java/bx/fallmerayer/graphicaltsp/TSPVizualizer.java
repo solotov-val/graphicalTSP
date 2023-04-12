@@ -8,10 +8,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * A JavaFX application that visualizes the Traveling Salesman Problem (TSP)
@@ -109,13 +106,7 @@ public class TSPVizualizer extends Application {
         GraphicsContext gc = canvas.getGraphicsContext2D();
         root.getChildren().add(canvas);
 
-        List<City> cities = Arrays.asList(
-                new City(100, 100),
-                new City(200, 200),
-                new City(300, 100),
-                new City(400, 300),
-                new City(500, 200)
-        );
+        List<City> cities = generateRandomCities(5, 20, CANVAS_WIDTH, CANVAS_HEIGHT);
 
         List<List<City>> permutations = generatePermutations(cities);
         List<City> shortestRoute = findShortestRoute(permutations);
@@ -127,6 +118,30 @@ public class TSPVizualizer extends Application {
         primaryStage.setScene(new Scene(root, CANVAS_WIDTH, CANVAS_HEIGHT));
         primaryStage.show();
     }
+
+    /**
+     * Generates a list of random cities with x and y coordinates within the specified bounds.
+     *
+     * @param minCities The minimum number of cities to generate.
+     * @param maxCities The maximum number of cities to generate.
+     * @param maxWidth  The maximum x-coordinate for the cities.
+     * @param maxHeight The maximum y-coordinate for the cities.
+     * @return A list of randomly generated cities.
+     */
+    private List<City> generateRandomCities(int minCities, int maxCities, double maxWidth, double maxHeight) {
+        Random random = new Random();
+        int numCities = random.nextInt(maxCities - minCities + 1) + minCities;
+        List<City> cities = new ArrayList<>();
+
+        for (int i = 0; i < numCities; i++) {
+            double x = random.nextDouble() * maxWidth;
+            double y = random.nextDouble() * maxHeight;
+            cities.add(new City(x, y));
+        }
+
+        return cities;
+    }
+
 
     /**
      * Draws the cities on the given GraphicsContext.
