@@ -1,12 +1,18 @@
 package bx.fallmerayer.graphicaltsp;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.util.*;
 
@@ -106,18 +112,34 @@ public class TSPVizualizer extends Application {
         GraphicsContext gc = canvas.getGraphicsContext2D();
         root.getChildren().add(canvas);
 
-        List<City> cities = generateRandomCities(10, 50, CANVAS_WIDTH, CANVAS_HEIGHT);
+        List<City> cities = generateRandomCities(99, 100, CANVAS_WIDTH, CANVAS_HEIGHT);
         Graph graph = new Graph(cities);
         List<Edge> mstEdges = MST.findMST(graph);
         List<City> approximatePath = PreorderTreeWalk.walk(mstEdges, cities.get(0));
+        List<City> optimizedPath = TwoOpt.optimize(approximatePath);
+
 
         drawCities(gc, cities);
-        drawShortestRoute(gc, approximatePath);
+
+        // Create the animation
+        DoubleProperty progress = new SimpleDoubleProperty(0);
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0), new KeyValue(progress, 0)),
+                new KeyFrame(Duration.seconds(5), new KeyValue(progress, 1)));
+        timeline.setCycleCount(1);
+
+        progress.addListener((observable, oldValue, newValue) -> {
+            gc.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+            drawCities(gc, cities);
+            drawShortestRoute(gc, optimizedPath, progress.doubleValue());
+        });
+
+        timeline.play();
 
         primaryStage.setTitle("TSP Visualizer");
         primaryStage.setScene(new Scene(root, CANVAS_WIDTH, CANVAS_HEIGHT));
         primaryStage.show();
     }
+
 
     /**
      * Generates a list of random cities with x and y coordinates within the specified bounds.
@@ -160,22 +182,18 @@ public class TSPVizualizer extends Application {
      * Draws the shortest route on the given GraphicsContext.
      *
      * @param gc            The GraphicsContext to draw the shortest route on.
-     * @param shortestRoute The list of cities representing the shortest route.
+     * @param progress      The progress of the animation, between 0 and 1.
      */
-    private void drawShortestRoute(GraphicsContext gc, List<City> shortestRoute) {
+    private void drawShortestRoute(GraphicsContext gc, List<City> path, double progress) {
         gc.setStroke(Color.BLUE);
         gc.setLineWidth(2);
 
-        // Draw a line between each pair of consecutive cities in the shortest route.
-        for (int i = 0; i < shortestRoute.size() - 1; i++) {
-            City current = shortestRoute.get(i);
-            City next = shortestRoute.get(i + 1);
-            gc.strokeLine(current.getX(), current.getY(), next.getX(), next.getY());
+        int steps = (int) (path.size() * progress);
+        for (int i = 0; i < steps - 1; i++) {
+            City city1 = path.get(i);
+            City city2 = path.get(i + 1);
+            gc.strokeLine(city1.getX(), city1.getY(), city2.getX(), city2.getY());
         }
-
-        // Draw a line between the last city and the first city to complete the loop.
-        City first = shortestRoute.get(0);
-        City last = shortestRoute.get(shortestRoute.size() - 1);
-        gc.strokeLine(first.getX(), first.getY(), last.getX(), last.getY());
     }
+
 }
