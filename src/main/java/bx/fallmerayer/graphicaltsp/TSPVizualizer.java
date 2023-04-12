@@ -106,13 +106,13 @@ public class TSPVizualizer extends Application {
         GraphicsContext gc = canvas.getGraphicsContext2D();
         root.getChildren().add(canvas);
 
-        List<City> cities = generateRandomCities(5, 20, CANVAS_WIDTH, CANVAS_HEIGHT);
-
-        List<List<City>> permutations = generatePermutations(cities);
-        List<City> shortestRoute = findShortestRoute(permutations);
+        List<City> cities = generateRandomCities(10, 50, CANVAS_WIDTH, CANVAS_HEIGHT);
+        Graph graph = new Graph(cities);
+        List<Edge> mstEdges = MST.findMST(graph);
+        List<City> approximatePath = PreorderTreeWalk.walk(mstEdges, cities.get(0));
 
         drawCities(gc, cities);
-        drawShortestRoute(gc, shortestRoute);
+        drawShortestRoute(gc, approximatePath);
 
         primaryStage.setTitle("TSP Visualizer");
         primaryStage.setScene(new Scene(root, CANVAS_WIDTH, CANVAS_HEIGHT));
