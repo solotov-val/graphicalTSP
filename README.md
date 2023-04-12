@@ -18,7 +18,7 @@ Clone the repository:
 
 bash
 Copy code
-git clone https://github.com/your-username/graphical-tsp.git
+git clone https://github.com/solotov-val/graphical-tsp.git
 cd graphical-tsp
 Build the project with Maven:
 
