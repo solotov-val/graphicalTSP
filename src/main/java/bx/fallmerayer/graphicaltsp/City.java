@@ -1,28 +1,16 @@
 package bx.fallmerayer.graphicaltsp;
 
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
-
-import java.util.List;
-
-import static javafx.application.Application.launch;
-
 /**
  * Represents a city with x and y coordinates.
  */
-public class City {
-    private final double x;
-    private final double y;
-
+public record City(double x, double y) {
     /**
      * Constructs a city with the given x and y coordinates.
      *
      * @param x The x-coordinate of the city.
      * @param y The y-coordinate of the city.
      */
-    public City(double x, double y) {
-        this.x = x;
-        this.y = y;
+    public City {
     }
 
     /**
@@ -30,7 +18,8 @@ public class City {
      *
      * @return The x-coordinate of the city.
      */
-    public double getX() {
+    @Override
+    public double x() {
         return x;
     }
 
@@ -39,7 +28,8 @@ public class City {
      *
      * @return The y-coordinate of the city.
      */
-    public double getY() {
+    @Override
+    public double y() {
         return y;
     }
 

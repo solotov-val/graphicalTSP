@@ -174,15 +174,15 @@ public class TSPVizualizer extends Application {
     private void drawCities(GraphicsContext gc, List<City> cities) {
         gc.setFill(Color.BLACK);
         for (City city : cities) {
-            gc.fillOval(city.getX() - CITY_RADIUS, city.getY() - CITY_RADIUS, CITY_RADIUS * 2, CITY_RADIUS * 2);
+            gc.fillOval(city.x() - CITY_RADIUS, city.y() - CITY_RADIUS, CITY_RADIUS * 2, CITY_RADIUS * 2);
         }
     }
 
     /**
      * Draws the shortest route on the given GraphicsContext.
      *
-     * @param gc            The GraphicsContext to draw the shortest route on.
-     * @param progress      The progress of the animation, between 0 and 1.
+     * @param gc       The GraphicsContext to draw the shortest route on.
+     * @param progress The progress of the animation, between 0 and 1.
      */
     private void drawShortestRoute(GraphicsContext gc, List<City> path, double progress) {
         gc.setStroke(Color.BLUE);
@@ -192,7 +192,7 @@ public class TSPVizualizer extends Application {
         for (int i = 0; i < steps - 1; i++) {
             City city1 = path.get(i);
             City city2 = path.get(i + 1);
-            gc.strokeLine(city1.getX(), city1.getY(), city2.getX(), city2.getY());
+            gc.strokeLine(city1.x(), city1.y(), city2.x(), city2.y());
         }
     }
 

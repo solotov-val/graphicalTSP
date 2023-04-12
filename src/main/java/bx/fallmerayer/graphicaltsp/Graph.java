@@ -2,6 +2,9 @@ package bx.fallmerayer.graphicaltsp;
 
 import java.util.List;
 
+/**
+ * This class represents an edge between two cities with a weight (distance).
+ */
 public class Graph {
     private final List<City> nodes;
     private final double[][] adjacencyMatrix;
